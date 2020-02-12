@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>geolocation</title>
+
+        <script>
+            function clickBtn(){
+                // BOM의 navigator객체의 하위에 geolocation 객체가 새로 추가되었음
+                window.navigator.geolocation.getCurrentPosition(function(position){
+                    var lat = position.coords.latitude;    //위도
+                    var lng = position.coords.longitude;    //경도
+                    document.getElementById('target').innerHTML = lat+", "+lng;
+                }, 
+                function(error){
+                    switch(error.code){
+                        case error.PERMISSION_DENIED:
+                            str = "사용자 거부";
+                            break;
+                        case error.POSITION_UNAVAILABLE:    //위치 못찾았을떄
+                            str = "지리정보 없음";
+                            break;
+                        case error.TIMEOUT:     //너무 오래 걸려서 시간초과
+                            str = "시간초과";
+                            break;
+                        case error.UNKNOWN_ERROR:   //알수 없는 에러
+                            str = "알수없는 에러";
+                            break;
+                    }
+                    document.getElementById('target').innerHTML = str;
+                });  //현재위치 가져오기(첫번째 파라미터: 성공시 적용할 함수), 두번째 파라미터: 에러시 적용할 함수)    //window는 생략가능
+            }
+            var id; //clear시 적용할 녀석
+            function clickBtn2(){
+                id = navigator.geolocation.watchPosition(function(position){
+                    var lat = position.coords.latitude;
+                    var lng = position.coords.longitude;
+                    document.getElementById('target').innerHTML = lat+", "+lng;
+                }); // ,쓰고 에러시 함수써도 되지만 생략
+            }
+            function clickBtn3(){
+                navigator.geolocation.clearPosition(id);
+            }
+        </script>
+    </head>
+    <body>
+        <button onclick="clickBtn()">my location</button>   <!-- 위치정보를 1번만 얻어옴 -->
+        <h3 id="target">location</h3>
+
+        <button onclick="clickBtn2()">위치 자동 업데이트 watch()</button>
+        <button onclick="clickBtn3()">위치 자동 업데이트 종료 clear()</button>
+    </body>
+</html>

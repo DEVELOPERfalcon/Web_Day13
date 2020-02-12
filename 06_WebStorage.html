@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Web Storage</title>
+    </head>
+    <body>
+        <h3 id="aa"></h3>
+        <hr>
+        <h3 id="bb"></h3>
+        <script>
+            // 웹 스토리지: 웹 문서(html)가 데이터를 client(사용자)의 컴퓨터에 저장할 수 있는 기법 (일종의 쿠키) (내가 만든 html을 닷홈에 올리고, 그 문서를 다른사람이 봤을 때, 그 문서를 본 사람의 컴퓨터에 데이터 저장)
+            // 쿠키는 4KB 저장가능하지만 웹 스토리지는 5MB정도 저장 가능
+            // 웹스토리지의 사용 예) 페이지 방문횟수 저장
+            // 웹스토리지의 2가지 저장소
+            // 1) localStorage (브라우저가 닫히더라도 데이터가 영구히 저장)
+            if(!localStorage.cnt){  //혹시 localStorage에 cnt라는 변수가 없다면?
+                localStorage.cnt = 0;   //cnt변수를 만들고 초기화
+            }
+            //기존의 cnt값을 증가
+            localStorage.cnt++;
+            document.getElementById('aa').innerHTML = localStorage.cnt+"번째 방문입니다.";
+
+            // 2) sessionStorage (브라우저가 켜져있는 동안만 데이터를 보관)
+            if(!sessionStorage.cnt){
+                sessionStorage.cnt=0;
+            }
+            sessionStorage.cnt++;
+            document.getElementById('bb').innerHTML = sessionStorage.cnt+"번째 방문입니다.";
+
+        </script>
+    </body>
+</html>

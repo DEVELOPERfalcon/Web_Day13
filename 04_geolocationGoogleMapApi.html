@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>geolocation Google Map Api</title>
+        <!-- 구글지도 사용하기
+             1. https://developers.google.com/ 접속
+             2. Product 메뉴(탭)의 Maps Plaform 클릭
+             3. 문서 메뉴(탭) 클릭
+             4. Maps.JavaScript.API 클릭
+             5. Overview에 나와있는 코드 참고 -->
+             
+        <!-- API key 얻기
+             1. https://developers.google.com/ 접속
+             2. Product 메뉴(탭)의 Maps Plaform 클릭
+             3. 문서 메뉴(탭) 클릭
+             4. Maps.JavaScript.API 클릭
+             5. 왼쪽 메뉴(탭)에서 Get an API Key 클릭
+             6. Google Cloud Platform Console 클릭
+             7. 로그인
+             8. my project(프로젝트 선택) 클릭
+             9. 새프로젝트 클릭
+             10. 프로젝트 이름 지정 후 만들기 클릭
+             11. my project에서 지금 만든 프로젝트 선택
+             12. Maps.JavaScript.API 클릭
+             13. 사용 설정 클릭
+             14.사용자 인증 정보 클릭
+             15.API 및 서비스의 사용자 인증 정보 클릭
+             16.사용자 인증 정보 만들기 클릭
+             17.API 클릭
+             18.키제한 또는 닫기
+             19.발급받은 키 script의 src에 붙여넣기
+            -->
+
+        <!-- marker 추가하기
+             1. https://developers.google.com/ 접속
+             2. Product 메뉴(탭)의 Maps Plaform 클릭
+             3. 문서 메뉴(탭) 클릭
+             4. Maps.JavaScript.API 클릭
+             5. 왼쪽 메뉴(탭)에서 Markers 클릭 후 참조 -->
+
+        <!-- Google 지도 api사용 스크립트 추가 -->
+        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCeUCMiiv7T2ZpqcunbtiB9J5CmFoguJZw&callback=initMap" async defer></script>
+
+        <style>
+            /* 지도는 너비와 높이를 지정하지 않으면 지도가 읽어지지 않음 (높이를 %로 하려면 html과 body에 height속성을 줘야 한다) */
+            #map{
+                width: 100%;
+                height: 400px;
+            }
+        </style>
+
+        <script>
+            function showMap(){
+                // 지도가 보여질 요소 찾아오기
+                var e = document.getElementById('map');
+
+                // Google지도 객체 생성 및 e요소에 보여주기
+                new google.maps.Map(e, {center: {lat:37.562161, lng:127.035199}, zoom:14});  //첫번째 파라미터: 지도를 보여줄 요소, 두번째 파라미터: 객체로 위치 정보 전달(지도 중심 위치 및 축적)
+            }
+
+            function showMarker(){
+                // 지도가 보여질 요소
+                var e = document.getElementById('map');
+
+                // 원하는 좌표 객체
+                var mrhi = new google.maps.LatLng(37.562161, 127.035199);
+
+                // 표시되는 지도의 옵션 객체
+                var opts = {
+                    center: mrhi,
+                    zoom:14
+                };
+
+                // 지도 보이기
+                var map = new google.maps.Map(e, opts);
+
+                // 지도에 붙일 마커 객체 생성
+                var marker = new google.maps.Marker({
+                    position: mrhi, //마커 위치
+                    title: "미래능력개발교육원" //마커에 마우스를 놓고 있으면 보이는 tooltip(마커 이름)
+                });
+
+                // 지도 객체에 마커 추가하기
+                marker.setMap(map);
+
+                // 마커 클릭이벤트 반응하기
+                marker.addListener('click', function(){ //더블클릭도 가능
+                    open('http://www.mrhi.or.kr', '_blank');
+                });
+
+                // 두번째 마커 추가 및 마커 이미지 변경
+                var station = new google.maps.LatLng(37.561196, 127.038498);    //왕십리역 좌표
+
+                // 마커이미지의 경로
+                var img = 'https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png';
+
+                var marker2 = new google.maps.Marker({
+                    position: station,
+                    title: "왕십리역",
+                    icon: img,
+                    map: map    //이렇게 하면 만들면서 마커를 map객체에 추가시킬 수 있음(setMap())
+                });
+
+                // marker2 클릭시에 애니메이션 적용
+                marker2.addListener('click', function(){
+                    // 마커 바운스 시키기 (무한 반복)
+                    //marker2.setAnimation(google.maps.Animation.BOUNCE);
+
+                    // 재클릭시 멈추기
+                    if(marker2.getAnimation()==null){
+                        marker2.setAnimation(google.maps.Animation.BOUNCE);
+                    }else{
+                        marker2.setAnimation(null);
+                    }
+                });
+
+                // 마커가 보여질 때 애니메이션 처리도 가능(여러개 동시에 가능)
+                // 왕십리역 약국들(구글지도에서 얻어온 좌표값들 사용)
+                var pharmacys = [
+                    ['희망약국', 37.562516, 127.035679],
+                    ['이수프라자약국', 37.561155, 127.034560],
+                    ['연세우리약국', 37.560710, 127.035978],
+                    ['왕십리약국', 37.562162, 127.032171]
+                ];
+                for(var i=0; i<pharmacys.length; i++){
+                    var title = pharmacys[i][0];
+                    var pos = new google.maps.LatLng(pharmacys[i][1], pharmacys[i][2]);
+
+                    var m = new google.maps.Marker({
+                        position: pos,
+                        title: title,
+                        icon: "./button-red.png",
+                        map: map,
+                        Animation: google.maps.Animation.DROP
+                    });
+
+                    m.addListener('click', function(){
+                        alert(this.getTitle());
+                    });
+                }
+            }
+        </script>
+    </head>
+    <body>
+
+        <button onclick="showMap()">show map</button>
+        <button onclick="showMarker()">show marker</button>
+
+        <!-- 지도 타일 이미지들을 보여줄 영역 div요소 -->
+        <div id="map"></div>
+    </body>
+</html>
